@@ -41,6 +41,7 @@ namespace example
         inY=false;
         paused=false;
         puntuacion=0;
+        direction=0;
 
         //inicializa los fantasmas
         ghost.Initialize(270,460);
@@ -68,9 +69,8 @@ namespace example
             switch (event.id)
             {
                 case ID(touch-started):
-                case ID(touch-moved):
-                case ID(touch-ended):
                 {
+                    direction=0;
                     //toma la posicion de donde se ha tocado
                     touch_location =
                             {
@@ -80,57 +80,49 @@ namespace example
                     //gestiona la x e y que manejan la posicion de pacman, encajandolo en los carriles y dependiendo de que botón de movimiento toque
                     if(touch_location.coordinates.x()>1000&&touch_location.coordinates.x()<1100&&
                        touch_location.coordinates.y()>250&&touch_location.coordinates.y()<350){
-                        if(((x>265&&x<285)||(x>455&&x<470)||(x>665&&x<675)||(x>865&&x<875))&&y<655){
-                            y+=speed;
-                        }
-                        break;
+                            direction=1;
+
                     }
                     else if(touch_location.coordinates.x()>1000&&touch_location.coordinates.x()<1100&&
                             touch_location.coordinates.y()>50&&touch_location.coordinates.y()<150){
-                        if(((x>265&&x<285)||(x>455&&x<470)||(x>665&&x<675)||(x>865&&x<875))&&y>45){
-                            y-=speed;
-                        }
-                        break;
+                            direction=2;
+
                     }
                     else if(touch_location.coordinates.x()>900&&touch_location.coordinates.x()<1000&&
                             touch_location.coordinates.y()>150&&touch_location.coordinates.y()<250){
-                        if(((y>40&&y<60)||(y>250&&y<270)||(y>440&&y<460)||(y>645&&y<660))&&x>270){
-                            x-=speed;
-                        }
-                        break;
+                            direction=3;
+
                     }
                     else if(touch_location.coordinates.x()>1100&&touch_location.coordinates.x()<1200&&
                             touch_location.coordinates.y()>150&&touch_location.coordinates.y()<250){
-                        if(((y>40&&y<60)||(y>250&&y<270)||(y>440&&y<460)||(y>645&&y<660))&&x<870){
-                            x+=speed;
-                        }
-                        break;
-
+                            direction=4;
 
                     }
 
 
                 }
-                    //pone el pause
-                    switch(event.id)
-                    {
-                        case ID(touch-started):
-                        case ID(touch-moved):
-                        case ID(touch-ended):
-                        {
-                            touch_location =
-                                    {
-                                            *event[ID(x)].as<var::Float>(),
-                                            *event[ID(y)].as<var::Float>()
-                                    };
-                            if(touch_location.coordinates.x() > 50 &&
-                               touch_location.coordinates.x() < 150 &&
-                               touch_location.coordinates.y() > canvas_height - 200 &&
-                               touch_location.coordinates.y() < canvas_height-100)
-                                paused=true;
-                            break;
-                        }
-                    }
+                //case ID(touch-ended):
+
+
+
+            }
+            //pone el pause
+            switch(event.id)
+            {
+                case ID(touch-started):
+                {
+                    touch_location =
+                            {
+                                    *event[ID(x)].as<var::Float>(),
+                                    *event[ID(y)].as<var::Float>()
+                            };
+                    if(touch_location.coordinates.x() > 50 &&
+                       touch_location.coordinates.x() < 150 &&
+                       touch_location.coordinates.y() > canvas_height - 200 &&
+                       touch_location.coordinates.y() < canvas_height-100)
+                        paused=true;
+                    break;
+                }
             }
         }
         //quita el pause
@@ -138,8 +130,6 @@ namespace example
             switch(event.id)
             {
                 case ID(touch-started):
-                case ID(touch-moved):
-                case ID(touch-ended):
                 {
                     touch_location =
                             {
@@ -151,6 +141,7 @@ namespace example
                        touch_location.coordinates.y() > canvas_height - 200 &&
                        touch_location.coordinates.y() < canvas_height-100)
                         paused=false;
+                    break;
                 }
             }
 
@@ -174,6 +165,15 @@ namespace example
                 case RUNNING: run  (time); break;
             }
 
+
+            if(direction==1&&((x>265&&x<285)||(x>455&&x<470)||(x>665&&x<675)||(x>865&&x<875))&&y<655)
+                y+=speed;
+            if(direction==2&&((x>265&&x<285)||(x>455&&x<470)||(x>665&&x<675)||(x>865&&x<875))&&y>45)
+                y-=speed;
+            if(direction==3&&((y>40&&y<60)||(y>250&&y<270)||(y>440&&y<460)||(y>645&&y<660))&&x>270)
+                x-=speed;
+            if(direction==4&&((y>40&&y<60)||(y>250&&y<270)||(y>440&&y<460)||(y>645&&y<660))&&x<870)
+                x+=speed;
 
             //indicadores de disponibilidad para saber cuando estás en un carril
             if((x>265&&x<285)||(x>455&&x<470)||(x>665&&x<675)||(x>865&&x<875))

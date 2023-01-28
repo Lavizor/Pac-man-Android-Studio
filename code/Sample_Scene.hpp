@@ -164,6 +164,7 @@ namespace example
         bool            paused;
         bool            lose;
         int             speed;
+        int             direction;
         float           timer;
         Vector2f       touch_location;
         unsigned       canvas_width;
